@@ -1,3 +1,5 @@
-body {
-  background: whitesmoke;
-}
+body {background: whitesmoke;}
+.rounded {border-radius: 50px;}
+.text-white {color: whitesmoke;}
+.bg-green {background: #7FAD39;}
+.cursor-pointer {cursor: pointer;}

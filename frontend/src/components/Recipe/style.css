@@ -1,0 +1,9 @@
+.icons {
+    position: absolute;
+}
+.icon {
+    background: #7FAD39;
+    color: whitesmoke;
+    padding: 4px;
+    cursor: pointer;
+}

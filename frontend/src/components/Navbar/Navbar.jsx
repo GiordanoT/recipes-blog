@@ -4,15 +4,27 @@ import {
     AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem
 } from '@mui/material';
 import {MenuRounded} from '@mui/icons-material';
+import {useDispatch, useSelector} from 'react-redux';
+import Api from '../../data/api';
+import {logout} from '../../redux/slices/user';
 
-function Navbar() {
-    const pages = ['home', 'add recipe', 'my recipes', 'my menus', 'favorites'];
-    const settings = ['logout'];
+export function Navbar() {
+    let pages;
+    let settings;
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector(state => state.user);
+    if(user) {
+        pages = ['home', 'add Recipe', 'my Recipes', 'my Menus', 'favorites'];
+        settings = ['logout'];
+    } else {
+        pages = ['home'];
+        settings = ['login', 'register'];
+    }
+
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-
     const handleOpenNavMenu = e => setAnchorElNav(e.currentTarget);
     const handleOpenUserMenu = e => setAnchorElUser(e.currentTarget);
     const handleCloseNavMenu = () => setAnchorElNav(null);
@@ -21,11 +33,7 @@ function Navbar() {
     return (<AppBar sx={{background: 'whitesmoke'}} position='static'>
         <Container maxWidth='xl'>
             <Toolbar disableGutters>
-                <Typography
-                    variant='h6'
-                    noWrap
-                    component='a'
-                    href='#app-bar-with-responsive-menu'
+                <Typography variant='h6' noWrap component='a'
                     sx={{
                         mr: 2,
                         display: {xs: 'none', md: 'flex'},
@@ -61,7 +69,10 @@ function Navbar() {
                         sx={{display: {xs: 'block', md: 'none'}}}
                     >
                         {pages.map(page => <MenuItem key={page} onClick={handleCloseNavMenu}>
-                            <Typography onClick={e => navigate(page.replace(' ', ''))} textAlign='center'>{page}</Typography>
+                            <Typography onClick={e => navigate('/' + page.replace(' ', ''))}
+                                        textAlign='center'>
+                                {page[0].toUpperCase() + page.substring(1)}
+                            </Typography>
                         </MenuItem>)}
                     </Menu>
                 </Box>
@@ -88,9 +99,8 @@ function Navbar() {
                         key={page}
                         onClick={e => {
                             handleCloseNavMenu();
-                            navigate(page.replace(' ', ''));
-                        }}
-                        sx={{my: 2, color: 'black', display: 'block'}}
+                            navigate('/' + page.replace(' ', ''));
+                        }} sx={{my: 2, color: 'black', display: 'block'}}
                     >
                         {page}
                     </Button>
@@ -98,11 +108,9 @@ function Navbar() {
                 </Box>
 
                 <Box sx={{flexGrow: 0}}>
-                    <Tooltip title='Open settings'>
-                        <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                            <Avatar alt='Avatar' sx={{background: '#7FAD39'}} />
-                        </IconButton>
-                    </Tooltip>
+                    <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                        <Avatar alt='Avatar' sx={{background: '#7FAD39'}} />
+                    </IconButton>
                     <Menu
                         sx={{mt: '45px'}}
                         id='menu-appbar'
@@ -114,7 +122,12 @@ function Navbar() {
                         onClose={handleCloseUserMenu}
                     >
                         {settings.map(setting => <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Typography textAlign='center'>{setting}</Typography>
+                            <Typography onClick={async() => {
+                                if(setting === 'logout') {
+                                    await Api.post('auth/logout');
+                                    dispatch(logout());
+                                } else navigate('/' + setting);
+                            }} textAlign='center'>{setting[0].toUpperCase() + setting.substring(1)}</Typography>
                         </MenuItem>)}
                     </Menu>
                 </Box>
@@ -122,4 +135,3 @@ function Navbar() {
         </Container>
     </AppBar>);
 }
-export default Navbar;
