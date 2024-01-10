@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {Categories, Favorites, Recipes, Users} from '../db';
+import {Categories, Recipes, Users} from '../db';
 import U from '../common/u';
 
 class RecipesController {
@@ -85,7 +85,6 @@ class RecipesController {
         try {
             const {id} = req.params;
             await Recipes.delete(id);
-            await Favorites.deleteByRecipe(id);
             return res.status(200).send('Recipe deleted.');
         } catch(error) {
             return res.status(400).send(error);

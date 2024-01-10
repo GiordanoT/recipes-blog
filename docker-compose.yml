@@ -33,11 +33,11 @@ services:
   #  ports:
   #    - '5001:80'
 
-  #backend:
-  #  build: ./backend
-  #  container_name: backend
-  #  restart: always
-  #  depends_on:
-  #    - mongo
-  #  ports:
-  #    - '5002:5002'
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - '5000:5000'

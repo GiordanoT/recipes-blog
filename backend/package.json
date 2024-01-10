@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nodemon -r dotenv/config src/app.ts dotenv_config_path=.env.development",
     "prod": "nodemon -r dotenv/config src/app.ts dotenv_config_path=.env.production",
+    "build": "ts-node esbuild.config.ts",
+    "serve": "node dist/main.bundle.js",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],
@@ -21,6 +23,7 @@
     "@types/mongoose": "^5.11.97",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
+    "esbuild": "0.19.11",
     "eslint": "^8.51.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",

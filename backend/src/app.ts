@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 /* Server */
 const server = http.createServer(app);
-server.listen(5002);
+server.listen(5000);
 
 /* Database */
 (async function() {
@@ -41,4 +41,6 @@ app.use(`/${root}/categories`, CategoriesRouter);
 app.use(`/${root}/recipes`, RecipesRouter);
 app.use(`/${root}/favorites`, FavoritesRouter);
 app.use(`/${root}/menus`, MenusRouter);
+
+
 

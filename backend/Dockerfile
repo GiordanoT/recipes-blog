@@ -1,12 +1,8 @@
 FROM node:16-alpine
 
 WORKDIR /app
-COPY . .
-
-# RUN npm install -g nodemon
-# RUN npm install -g ts-node
-RUN npm install
+COPY ./dist .
 
 EXPOSE 5000
 
-CMD ["npm", "run", "prod"]
+CMD ["node", "main.bundle.js"]
