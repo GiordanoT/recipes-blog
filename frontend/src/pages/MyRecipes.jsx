@@ -2,7 +2,7 @@ import {useSelector} from 'react-redux';
 import Error from './Error';
 import {Navbar, Recipes} from '../components';
 
-function MyRecipes() {
+function MyRecipesPage() {
     const user = useSelector(state => state.auth);
     const recipes = useSelector(state => state.recipes);
     if(!user) return(<Error />);
@@ -14,4 +14,4 @@ function MyRecipes() {
     </section>);
 }
 
-export default MyRecipes;
+export default MyRecipesPage;

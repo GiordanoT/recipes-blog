@@ -1,12 +1,13 @@
-import {TextField, Button, FormControl, InputLabel} from '@mui/material';
+import {Button, FormControl, TextField} from '@mui/material';
 import {useState} from 'react';
 import Api from '../data/api';
 import {useDispatch} from 'react-redux';
 import {login} from '../redux/slices/auth';
 import {useNavigate} from 'react-router-dom';
 import {resetFavorites, setFavorites} from "../redux/slices/favorites";
+import {resetMenus, setMenus} from "../redux/slices/menus";
 
-function Login() {
+function LoginPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -22,6 +23,12 @@ function Login() {
             if(favorites.code === 200) {
                 dispatch(resetFavorites());
                 dispatch(setFavorites(favorites.data));
+            }
+            /* Loading Menus */
+            const menus = await Api.get('menus');
+            if(menus.code === 200) {
+                dispatch(resetMenus());
+                dispatch(setMenus(menus.data));
             }
             navigate('/home');
         } else setError(true);
@@ -44,4 +51,4 @@ function Login() {
     </div>);
 }
 
-export default Login;
+export default LoginPage;

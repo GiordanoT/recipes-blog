@@ -2,7 +2,7 @@ import {Navbar, Recipes} from "../components";
 import {useSelector} from "react-redux";
 import Error from "./Error";
 
-function Favorites() {
+function FavoritesPage() {
     const user = useSelector(state => state.auth);
     const favorites = useSelector(state => state.favorites);
     const recipes = useSelector(state => state.recipes);
@@ -15,4 +15,4 @@ function Favorites() {
     </section>)
 }
 
-export default Favorites;
+export default FavoritesPage;

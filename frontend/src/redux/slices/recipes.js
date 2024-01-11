@@ -13,7 +13,10 @@ export const recipesSlice = createSlice({
        addRecipe(state, action) {
            state.push(action.payload);
        },
+       removeRecipe(state, action) {
+           return state.filter(r => r._id !== action.payload._id);
+       }
    }
 });
 
-export const {setRecipes, resetRecipes, addRecipe} = recipesSlice.actions;
+export const {setRecipes, resetRecipes, addRecipe, removeRecipe} = recipesSlice.actions;

@@ -10,7 +10,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
       <Provider store={store}>
-          <button onClick={e => console.log(store.getState())}>DEBUG</button>
           <App />
       </Provider>
   </React.StrictMode>

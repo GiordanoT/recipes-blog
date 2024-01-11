@@ -1,21 +1,24 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import Api from './data/api';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {resetCategories, setCategories} from "./redux/slices/categories";
 import {resetRecipes, setRecipes} from "./redux/slices/recipes";
 import {resetUsers, setUsers} from "./redux/slices/users";
-import Error from './pages/Error';
-import Home from './pages/Home';
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import MyRecipes from "./pages/MyRecipes";
-import Favorites from "./pages/Favorites";
-import AddRecipe from "./pages/AddRecipe";
+import ErrorPage from './pages/Error';
+import HomePage from './pages/Home';
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
+import MyRecipesPage from "./pages/MyRecipes";
+import FavoritesPage from "./pages/Favorites";
+import AddRecipePage from "./pages/AddRecipe";
+import EditRecipePage from "./pages/EditRecipe";
+import RecipePage from "./pages/Recipe";
 import {CircularProgress} from "@mui/material";
+import MyMenusPage from "./pages/MyMenus";
+import MenuPage from "./pages/Menu";
 
 function App() {
-  const user = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
@@ -44,14 +47,18 @@ function App() {
   if(loading) return(<div className={'d-block text-center mt-3'}><CircularProgress /></div>)
   return(<BrowserRouter>
     <Routes>
-      <Route path={''} element={<Home />} />
-      <Route path={'home'} element={<Home />} />
-      <Route path={'login'} element={<Login />} />
-      <Route path={'register'} element={<Register />} />
-      <Route path={'myRecipes'} element={<MyRecipes />} />
-      <Route path={'favorites'} element={<Favorites />} />
-      <Route path={'addRecipe'} element={<AddRecipe />} />
-      <Route path={'*'} element={<Error />} />
+      <Route path={''} element={<HomePage />} />
+      <Route path={'home'} element={<HomePage />} />
+      <Route path={'login'} element={<LoginPage />} />
+      <Route path={'register'} element={<RegisterPage />} />
+      <Route path={'myRecipes'} element={<MyRecipesPage />} />
+      <Route path={'favorites'} element={<FavoritesPage />} />
+      <Route path={'addRecipe'} element={<AddRecipePage />} />
+      <Route path={'recipe'} element={<RecipePage />} />
+      <Route path={'editRecipe'} element={<EditRecipePage />} />
+      <Route path={'myMenus'} element={<MyMenusPage />} />
+      <Route path={'menu'} element={<MenuPage />} />
+      <Route path={'*'} element={<ErrorPage />} />
     </Routes>
   </BrowserRouter>);
 }

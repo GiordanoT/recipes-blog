@@ -4,9 +4,8 @@ import Api from '../data/api';
 import {useDispatch} from "react-redux";
 import {login} from '../redux/slices/auth';
 import {useNavigate} from "react-router-dom";
-import {resetFavorites, setFavorites} from "../redux/slices/favorites";
 
-function Register() {
+function RegisterPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -18,12 +17,6 @@ function Register() {
         const response = await Api.post('auth/register', {email, username, password});
         if(response.code === 200) {
             dispatch(login(response.data));
-            /* Loading Favorites */
-            const favorites = await Api.get('favorites');
-            if(favorites.code === 200) {
-                dispatch(resetFavorites());
-                dispatch(setFavorites(favorites.data));
-            }
             navigate('/home');
         } else setError(true);
     }
@@ -46,4 +39,4 @@ function Register() {
     </div>);
 }
 
-export default Register
+export default RegisterPage;

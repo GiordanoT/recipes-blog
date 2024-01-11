@@ -2,7 +2,7 @@ import {Navbar, CategoriesFilter, Recipes} from '../components';
 import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
-function Home() {
+function HomePage() {
     const recipes = useSelector(state => state.recipes);
     const [filteredRecipes, setFilteredRecipes] = useState([]);
     const [category, setCategory] = useState('');
@@ -13,7 +13,7 @@ function Home() {
         if(name) _recipes = _recipes.filter(r => r.name.includes(name));
         if(category) _recipes = _recipes.filter(r => r.category === category);
         setFilteredRecipes(_recipes);
-    }, [name, category]);
+    }, [name, category, recipes]);
 
     return(<section>
         <Navbar />
@@ -26,4 +26,4 @@ function Home() {
     </section>)
 }
 
-export default Home;
+export default HomePage;

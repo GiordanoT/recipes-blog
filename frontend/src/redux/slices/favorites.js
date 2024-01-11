@@ -9,8 +9,14 @@ export const favoritesSlice = createSlice({
        },
        resetFavorites() {
            return [];
+       },
+       addFavorite(state, action) {
+           state.push(action.payload);
+       },
+       removeFavorite(state, action) {
+            return state.filter(f => f.recipe !== action.payload._id);
        }
    }
 });
 
-export const {setFavorites, resetFavorites} = favoritesSlice.actions;
+export const {setFavorites, resetFavorites, addFavorite, removeFavorite} = favoritesSlice.actions;

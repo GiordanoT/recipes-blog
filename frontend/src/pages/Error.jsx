@@ -1,6 +1,6 @@
 import {Navbar} from "../components";
 
-function Error() {
+function ErrorPage() {
     return(<section>
         <Navbar />
         <div className={'container mt-3'}>
@@ -11,4 +11,4 @@ function Error() {
     </section>)
 }
 
-export default Error;
+export default ErrorPage;
