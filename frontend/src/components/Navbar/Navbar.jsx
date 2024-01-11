@@ -6,7 +6,7 @@ import {
 import {MenuRounded} from '@mui/icons-material';
 import {useDispatch, useSelector} from 'react-redux';
 import Api from '../../data/api';
-import {logout} from '../../redux/slices/user';
+import {logout} from '../../redux/slices/auth';
 
 export function Navbar() {
     let pages;
@@ -14,7 +14,7 @@ export function Navbar() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector(state => state.user);
+    const user = useSelector(state => state.auth);
     if(user) {
         pages = ['home', 'add Recipe', 'my Recipes', 'my Menus', 'favorites'];
         settings = ['logout'];
@@ -80,7 +80,6 @@ export function Navbar() {
                     variant='h5'
                     noWrap
                     component='a'
-                    href='#app-bar-with-responsive-menu'
                     sx={{
                         mr: 2,
                         display: { xs: 'flex', md: 'none' },
@@ -113,7 +112,6 @@ export function Navbar() {
                     </IconButton>
                     <Menu
                         sx={{mt: '45px'}}
-                        id='menu-appbar'
                         anchorEl={anchorElUser}
                         anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                         keepMounted
@@ -126,6 +124,7 @@ export function Navbar() {
                                 if(setting === 'logout') {
                                     await Api.post('auth/logout');
                                     dispatch(logout());
+                                    navigate('/home');
                                 } else navigate('/' + setting);
                             }} textAlign='center'>{setting[0].toUpperCase() + setting.substring(1)}</Typography>
                         </MenuItem>)}

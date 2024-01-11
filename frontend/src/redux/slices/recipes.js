@@ -5,12 +5,15 @@ export const recipesSlice = createSlice({
    initialState: [],
    reducers: {
        setRecipes(state, action) {
-           state.push(...action.payload);
+           return action.payload;
        },
        resetRecipes() {
            return [];
-       }
+       },
+       addRecipe(state, action) {
+           state.push(action.payload);
+       },
    }
 });
 
-export const {setRecipes, resetRecipes} = recipesSlice.actions;
+export const {setRecipes, resetRecipes, addRecipe} = recipesSlice.actions;

@@ -5,7 +5,7 @@ export const categoriesSlice = createSlice({
    initialState: [],
    reducers: {
        setCategories(state, action) {
-           state.push(...action.payload);
+           return action.payload;
        },
        resetCategories() {
            return [];
