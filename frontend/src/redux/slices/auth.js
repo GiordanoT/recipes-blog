@@ -7,7 +7,7 @@ export const authSlice = createSlice({
        login(state, action) {
            return action.payload;
        },
-       logout(state, action) {
+       logout() {
            return null;
        }
    }

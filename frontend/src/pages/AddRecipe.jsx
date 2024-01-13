@@ -1,12 +1,12 @@
-import {Navbar} from "../components";
-import {useSelector} from "react-redux";
-import Error from "./Error";
-import {RecipeForm} from "../components";
+import {Navbar} from '../components';
+import {useSelector} from 'react-redux';
+import Error from './Error';
+import {RecipeForm} from '../components';
 
 function AddRecipePage() {
-    const user = useSelector(state => state.auth);
+    const auth = useSelector(state => state.auth);
 
-    if(!user) return(<Error />);
+    if(!auth) return(<Error />);
     return(<section>
         <Navbar />
         <RecipeForm recipe={null} />

@@ -1,22 +1,20 @@
-import useQuery from "../hooks/useQuery";
-import {Navbar} from "../components";
-import ErrorPage from "./Error";
-import {useDispatch, useSelector} from "react-redux";
-import {MenuItem, Select, IconButton} from "@mui/material";
-import {Add, Favorite} from "@mui/icons-material";
-import {useState} from "react";
-import Api from "../data/api";
-import {addFavorite, removeFavorite} from "../redux/slices/favorites";
-import {addMenu, removeMenu} from "../redux/slices/menus";
+import useQuery from '../hooks/useQuery';
+import {Navbar} from '../components';
+import ErrorPage from './Error';
+import {useDispatch, useSelector} from 'react-redux';
+import {MenuItem, Select, IconButton} from '@mui/material';
+import {Add, Favorite} from '@mui/icons-material';
+import {useState} from 'react';
+import Api from '../data/api';
+import {addFavorite, removeFavorite} from '../redux/slices/favorites';
+import {addMenu, removeMenu} from '../redux/slices/menus';
+import {isEqual, pick} from 'lodash-es';
 
 function RecipePage() {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.auth);
-    const recipes = useSelector(state => state.recipes);
-    const users = useSelector(state => state.users);
-    const categories = useSelector(state => state.categories);
-    const menus = useSelector(state => state.menus);
-    const favorites = useSelector(state => state.favorites);
+    const {auth, recipes, users, categories, menus, favorites} = useSelector(state =>
+        pick(state, ['auth', 'recipes', 'users', 'categories', 'menus', 'favorites']), isEqual
+    );
     const [menu, setMenu] = useState(menus[0]?._id);
     const query = useQuery();
     const id = query.get('id');
@@ -32,7 +30,7 @@ function RecipePage() {
         } else {
             const response = await Api.get(`favorites/${recipe._id}`);
             if(response.code !== 200) return;
-            dispatch(addFavorite({_id: new Date(), user: user._id, recipe: recipe._id}));
+            dispatch(addFavorite({_id: new Date(), user: auth._id, recipe: recipe._id}));
         }
     }
 
@@ -64,8 +62,8 @@ function RecipePage() {
                     <div>Ingredients: <br />{recipe.ingredients.map((ingredient, index) => <label className={'ms-2'} key={index}>
                         •<b>{ingredient}</b>
                     </label>)}</div>
-                    {user && <div className={'d-flex mt-2'}>
-                        <Select className={'m-2'} value={menu} onChange={e => setMenu(e.target.value)}
+                    {auth && <div className={'d-flex mt-3'}>
+                        <Select className={'bg-white'} value={menu} onChange={e => setMenu(e.target.value)}
                                 size='small'>
                             {menus.map(m => <MenuItem key={m._id} value={m._id}>{m.name}</MenuItem>)}
                         </Select>

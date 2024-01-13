@@ -1,16 +1,18 @@
-import {Navbar, Recipes} from "../components";
-import {useDispatch, useSelector} from "react-redux";
-import useQuery from "../hooks/useQuery";
-import ErrorPage from "./Error";
-import {TextField} from "@mui/material";
-import Api from "../data/api";
-import {addMenu, removeMenu} from "../redux/slices/menus";
-import {useState} from "react";
+import {Navbar, Recipes} from '../components';
+import {useDispatch, useSelector} from 'react-redux';
+import useQuery from '../hooks/useQuery';
+import ErrorPage from './Error';
+import {TextField} from '@mui/material';
+import Api from '../data/api';
+import {addMenu, removeMenu} from '../redux/slices/menus';
+import {useState} from 'react';
+import {isEqual, pick} from 'lodash-es';
 
 function MenuPage() {
     const dispatch = useDispatch();
-    const menus = useSelector(state => state.menus);
-    const recipes = useSelector(state => state.recipes);
+    const {menus, recipes} = useSelector(state =>
+        pick(state, ['menus', 'recipes']), isEqual
+    );
     const query = useQuery();
     const id = query.get('id');
     const menu = menus.filter(m => m._id === id)[0];
@@ -26,8 +28,7 @@ function MenuPage() {
         dispatch(addMenu(newMenu));
     }
 
-    if(!id) return(<ErrorPage />);
-    if(!menu) return(<ErrorPage />);
+    if(!id || !menu) return(<ErrorPage />);
     return(<section>
         <Navbar />
         <div className={'container mt-4'}>

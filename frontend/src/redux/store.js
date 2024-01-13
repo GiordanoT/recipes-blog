@@ -2,9 +2,9 @@ import {configureStore} from '@reduxjs/toolkit';
 import {authSlice} from './slices/auth';
 import {categoriesSlice} from './slices/categories';
 import {recipesSlice} from './slices/recipes';
-import {usersSlice} from "./slices/users";
-import {favoritesSlice} from "./slices/favorites";
-import {menusSlice} from "./slices/menus";
+import {usersSlice} from './slices/users';
+import {favoritesSlice} from './slices/favorites';
+import {menusSlice} from './slices/menus';
 
 export const store = configureStore({
     reducer: {

@@ -2,3 +2,14 @@ html, body, #root {background: whitesmoke;}
 .rounded {border-radius: 50px;}
 .bg-green {background: #7FAD39;}
 .cursor-pointer {cursor: pointer;}
+.w-fill {width: 100%; width: -webkit-fill-available;}
+.h-fill {height: 100%; height: -webkit-fill-available;}
+
+/* Scrollbar */
+::-webkit-scrollbar {width: 0.25rem;}
+::-webkit-scrollbar-track {background: #f1f1f1;}
+::-webkit-scrollbar-thumb{background: #888;
+    &:active, &:hover{
+        background: #555;
+    }
+}

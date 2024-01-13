@@ -1,10 +1,10 @@
-import {Button, FormControl, IconButton, MenuItem, Select, TextField} from "@mui/material";
-import {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Add, Clear} from "@mui/icons-material";
-import Api from "../../data/api";
-import {addRecipe, removeRecipe} from "../../redux/slices/recipes";
-import {useNavigate} from "react-router-dom";
+import {Button, IconButton, MenuItem, Select, TextField} from '@mui/material';
+import {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Add, Clear} from '@mui/icons-material';
+import Api from '../../data/api';
+import {addRecipe, removeRecipe} from '../../redux/slices/recipes';
+import {useNavigate} from 'react-router-dom';
 
 export function RecipeForm(props) {
     const {recipe} = props;
@@ -14,22 +14,34 @@ export function RecipeForm(props) {
     const [name, setName] = useState(recipe?.name || '');
     const [category, setCategory] = useState(recipe?.category || categories[0]._id);
     const [ingredients, setIngredients] = useState(recipe?.ingredients || []);
-    const [duration, setDuration] = useState(recipe?.duration || 0);
+    const [duration, setDuration] = useState(recipe?.duration || '');
     const [description, setDescription] = useState(recipe?.description || '');
     const [image, setImage] = useState(recipe?.image || '');
     const [error, setError] = useState(false);
 
+    const ingredientsRender = () => {
+        return(ingredients.map((ingredient, index) => <div className={'d-flex mx-auto'} key={index}>
+            <TextField required={true} className={'m-2 w-fill'} type={'text'} value={ingredient}
+                       label='Ingredient' size='small'  onChange={e => {
+                            const _ingredients = [...ingredients];
+                            _ingredients[index] = e.target.value;
+                            setIngredients(_ingredients);
+                        }}
+            />
+            <IconButton className={'my-auto'} color={'error'} onClick={e => {
+                const _ingredients = ingredients.filter((v, i) => i !== index);
+                setIngredients(_ingredients);
+            }}>
+                <Clear />
+            </IconButton>
+        </div>));
+    }
 
-    const handle = async() => {
-        if(!name || !category || ingredients.length <= 0 || !duration || duration <= 0 || !description || !image) {
+    const submit = async(e) => {
+        e.preventDefault();
+        if(ingredients.length <= 0) {
             setError(true);
             return;
-        }
-        for(const ingredient of ingredients) {
-            if (!ingredient) {
-                setError(true);
-                return;
-            }
         }
         const obj = {name, category, ingredients, duration, description, image};
         const response = (recipe) ? await Api.patch(`recipes/${recipe._id}`, obj) : await Api.post('recipes', obj);
@@ -54,19 +66,19 @@ export function RecipeForm(props) {
             {error && <label className={'text-danger d-block mx-auto'} style={{fontSize: '0.9rem'}}>
                 <b>Invalid Data</b>
             </label>}
-            <FormControl>
-                <TextField required={true} className={'m-2'} type={'text'} onChange={e => setName(e.target.value)}
-                           value={name} label='Name' size='small' />
-                <Select className={'m-2'} value={category} onChange={e => setCategory(e.target.value)}
+            <form onSubmit={submit}>
+                <TextField required={true} className={'m-2 w-fill'} type={'text'} value={name}
+                           onChange={e => setName(e.target.value)} label='Name' size='small' />
+                <Select className={'m-2 w-fill'} value={category} onChange={e => setCategory(e.target.value)}
                         size='small'>
                     {categories.map(c => <MenuItem key={c._id} value={c._id}>{c.name}</MenuItem>)}
                 </Select>
-                <TextField required={true} className={'m-2'} type={'number'} onChange={e => setDuration(e.target.value)}
-                           value={duration} label='Duration' size='small' />
-                <TextField required={true} className={'m-2'} type={'text'} onChange={e => setDescription(e.target.value)}
-                           value={description} label='Description' size='small' multiline={true} />
-                <TextField required={true} className={'m-2'} type={'text'} onChange={e => setImage(e.target.value)}
-                           value={image} label='Image' size='small' multiline={true} />
+                <TextField required={true} className={'m-2 w-fill'} type={'number'} value={duration}
+                           onChange={e => setDuration(e.target.value)} label='Duration' size='small' />
+                <TextField required={true} className={'m-2 w-fill'} type={'text'} value={description} multiline={true} rows={15}
+                           onChange={e => setDescription(e.target.value)} label='Description' size='small' />
+                <TextField required={true} className={'m-2 w-fill'} type={'text'} value={image} multiline={true} rows={4}
+                           onChange={e => setImage(e.target.value)} label='Image' size='small' />
                 <hr />
                 <div className={'d-flex mb-2'}>
                     <b style={{fontSize: '0.95rem'}} className={'d-block my-auto'}>INGREDIENTS</b>
@@ -74,21 +86,11 @@ export function RecipeForm(props) {
                         <Add />
                     </IconButton>
                 </div>
-                {ingredients.map((ingredient, index) => <div className={'d-flex mx-auto'} key={index}>
-                    <TextField label='Ingredient' size='small' required={true} className={'m-2'} type={'text'} value={ingredient} onChange={e => {
-                        const _ingredients = [...ingredients];
-                        _ingredients[index] = e.target.value;
-                        setIngredients(_ingredients);
-                    }} />
-                    <IconButton className={'my-auto'} color={'error'} onClick={e => {
-                        const _ingredients = ingredients.filter((v, i) => i !== index);
-                        setIngredients(_ingredients);
-                    }}>
-                        <Clear />
-                    </IconButton>
-                </div>)}
-                <Button variant={'contained'} className={'mt-3'} onClick={handle}>Send</Button>
-            </FormControl>
+                {ingredientsRender()}
+                <Button type={'submit'} variant={'contained'} className={'mt-3 d-block mx-auto w-fill'}>
+                    Send
+                </Button>
+            </form>
         </div>
     </div>);
 }

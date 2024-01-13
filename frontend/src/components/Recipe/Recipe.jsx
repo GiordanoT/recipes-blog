@@ -1,22 +1,22 @@
 import {Card, CardHeader, CardMedia, CardActions, IconButton} from '@mui/material';
 import {Edit, Delete, Favorite, Clear, Info} from '@mui/icons-material';
 import './style.css';
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
-import Api from "../../data/api";
-import {addFavorite, removeFavorite} from "../../redux/slices/favorites";
-import {removeRecipe} from "../../redux/slices/recipes";
-import {addMenu, removeMenu} from "../../redux/slices/menus";
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
+import Api from '../../data/api';
+import {addFavorite, removeFavorite} from '../../redux/slices/favorites';
+import {removeRecipe} from '../../redux/slices/recipes';
+import {addMenu, removeMenu} from '../../redux/slices/menus';
+import {isEqual, pick} from 'lodash-es';
 
 export function Recipe(props) {
-    // The menu prop is passed only from the menu page to handle menus.
+    /* The menu prop is passed only from the menu page to handle menus */
     const {recipe, path, menu} = props;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const user = useSelector(state => state.auth);
-    const users = useSelector(state => state.users);
-    const menus = useSelector(state => state.menus);
-    const favorites = useSelector(state => state.favorites);
+    const {auth, users, menus, favorites} = useSelector(state =>
+        pick(state, ['auth', 'users', 'menus', 'favorites']), isEqual
+    );
     const isFavorite = favorites.map(f => f.recipe).includes(recipe._id);
 
     const info = () => {
@@ -28,7 +28,7 @@ export function Recipe(props) {
         } else {
             const response = await Api.get(`favorites/${recipe._id}`);
             if(response.code !== 200) return;
-            dispatch(addFavorite({_id: new Date(), user: user._id, recipe: recipe._id}));
+            dispatch(addFavorite({_id: new Date(), user: auth._id, recipe: recipe._id}));
         }
     }
     const removeFromFavorite = async () => {
@@ -65,7 +65,7 @@ export function Recipe(props) {
             <IconButton color={'primary'} onClick={info}>
                 <Info />
             </IconButton>
-            {user && <>
+            {auth && <section>
                 {(path === '/home') && <IconButton color={isFavorite ? 'error' : 'primary'} onClick={handleFavorite}>
                     <Favorite />
                 </IconButton>}
@@ -81,7 +81,7 @@ export function Recipe(props) {
                 {(menu && path === '/menu') && <IconButton color='error' onClick={removeFromMenu}>
                     <Clear />
                 </IconButton>}
-            </>}
+            </section>}
         </CardActions>
     </Card>);
 }

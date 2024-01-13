@@ -2,41 +2,43 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import Api from './data/api';
 import {useDispatch} from 'react-redux';
-import {resetCategories, setCategories} from "./redux/slices/categories";
-import {resetRecipes, setRecipes} from "./redux/slices/recipes";
-import {resetUsers, setUsers} from "./redux/slices/users";
+import {resetCategories, setCategories} from './redux/slices/categories';
+import {resetRecipes, setRecipes} from './redux/slices/recipes';
+import {resetUsers, setUsers} from './redux/slices/users';
 import ErrorPage from './pages/Error';
 import HomePage from './pages/Home';
-import LoginPage from "./pages/Login";
-import RegisterPage from "./pages/Register";
-import MyRecipesPage from "./pages/MyRecipes";
-import FavoritesPage from "./pages/Favorites";
-import AddRecipePage from "./pages/AddRecipe";
-import EditRecipePage from "./pages/EditRecipe";
-import RecipePage from "./pages/Recipe";
-import {CircularProgress} from "@mui/material";
-import MyMenusPage from "./pages/MyMenus";
-import MenuPage from "./pages/Menu";
+import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
+import MyRecipesPage from './pages/MyRecipes';
+import FavoritesPage from './pages/Favorites';
+import AddRecipePage from './pages/AddRecipe';
+import EditRecipePage from './pages/EditRecipe';
+import RecipePage from './pages/Recipe';
+import {CircularProgress} from '@mui/material';
+import MyMenusPage from './pages/MyMenus';
+import MenuPage from './pages/Menu';
 
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
+  /* Use Effect Once */
   useEffect(() => {
     (async function() {
       /* Categories */
       let response = await Api.get('categories');
-      if(response.code !== 200) return;
+      if(response.code !== 200) {setError(true); return;}
       dispatch(resetCategories());
       dispatch(setCategories(response.data));
       /* Recipes */
       response = await Api.get('recipes');
-      if(response.code !== 200) return;
+      if(response.code !== 200) {setError(true); return;}
       dispatch(resetRecipes());
       dispatch(setRecipes(response.data));
       /* Users */
       response = await Api.get('users');
-      if(response.code !== 200) return;
+      if(response.code !== 200) {setError(true); return;}
       dispatch(resetUsers());
       dispatch(setUsers(response.data));
       /* Loading Done */
@@ -44,7 +46,10 @@ function App() {
     })()
   }, []);
 
-  if(loading) return(<div className={'d-block text-center mt-3'}><CircularProgress /></div>)
+  if(error) return(<div className={'d-block text-center m-3 p-2 bg-white border rounded'}>
+    <b className={'text-danger'}>Error:</b> Cannot retrieve data from the server, retry refreshing the page...
+  </div>);
+  if(loading) return(<div className={'d-block text-center mt-3'}><CircularProgress /></div>);
   return(<BrowserRouter>
     <Routes>
       <Route path={''} element={<HomePage />} />

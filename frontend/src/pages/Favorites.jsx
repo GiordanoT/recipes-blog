@@ -1,12 +1,13 @@
-import {Navbar, Recipes} from "../components";
-import {useSelector} from "react-redux";
-import Error from "./Error";
+import {Navbar, Recipes} from '../components';
+import {useSelector} from 'react-redux';
+import Error from './Error';
+import {isEqual, pick} from 'lodash-es';
 
 function FavoritesPage() {
-    const user = useSelector(state => state.auth);
-    const favorites = useSelector(state => state.favorites);
-    const recipes = useSelector(state => state.recipes);
-    if(!user) return(<Error />);
+    const {auth, favorites, recipes} = useSelector(state =>
+        pick(state, ['auth', 'favorites', 'recipes']), isEqual
+    );
+    if(!auth) return(<Error />);
     return(<section>
         <Navbar />
         <div className={'container mt-3'}>
