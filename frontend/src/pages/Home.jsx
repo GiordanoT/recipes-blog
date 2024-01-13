@@ -3,14 +3,18 @@ import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
 function HomePage() {
+    /* Global State */
     const recipes = useSelector(state => state.recipes);
+
+    /* Local State */
     const [filteredRecipes, setFilteredRecipes] = useState([]);
     const [category, setCategory] = useState('');
     const [name, setName] = useState('');
 
     useEffect(() => {
+        /* Filtering by name and category */
         let _recipes = [...recipes];
-        if(name) _recipes = _recipes.filter(r => r.name.includes(name));
+        if(name) _recipes = _recipes.filter(r => r.name.toLowerCase().includes(name.toLowerCase()));
         if(category) _recipes = _recipes.filter(r => r.category === category);
         setFilteredRecipes(_recipes);
     }, [name, category, recipes]);

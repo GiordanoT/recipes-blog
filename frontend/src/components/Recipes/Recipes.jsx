@@ -4,6 +4,7 @@ import Pagination from '@mui/material/Pagination';
 import {useLocation} from 'react-router-dom';
 
 export function Recipes(props) {
+    /* Local State */
     const {recipes, menu} = props;
     const location = useLocation();
     const [page, setPage] = useState(1);

@@ -4,9 +4,11 @@ import {Navbar, Recipes} from '../components';
 import {isEqual, pick} from 'lodash-es';
 
 function MyRecipesPage() {
+    /* Global State */
     const {auth, recipes} = useSelector(state =>
         pick(state, ['auth', 'recipes']), isEqual
     );
+
     if(!auth) return(<Error />);
     return(<section>
         <Navbar />

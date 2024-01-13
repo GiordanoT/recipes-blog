@@ -10,46 +10,54 @@ import {addMenu, removeMenu} from '../../redux/slices/menus';
 import {isEqual, pick} from 'lodash-es';
 
 export function Recipe(props) {
-    /* The menu prop is passed only from the menu page to handle menus */
-    const {recipe, path, menu} = props;
-    const navigate = useNavigate();
+    /* Global State */
     const dispatch = useDispatch();
     const {auth, users, menus, favorites} = useSelector(state =>
         pick(state, ['auth', 'users', 'menus', 'favorites']), isEqual
     );
+    /* Local State */
+    const navigate = useNavigate();
+    const {recipe, path, menu} = props; // The menu prop (ID) is passed only from the MenuPage to handle remove from menu.
     const isFavorite = favorites.map(f => f.recipe).includes(recipe._id);
 
     const info = () => {
-        navigate(`/recipe?id=${recipe._id}`)
+        navigate(`/recipe?id=${recipe._id}`);
     }
+
     const handleFavorite = async() => {
         if(isFavorite) {
             await removeFromFavorite();
         } else {
             const response = await Api.get(`favorites/${recipe._id}`);
             if(response.code !== 200) return;
-            dispatch(addFavorite({_id: new Date(), user: auth._id, recipe: recipe._id}));
+            dispatch(addFavorite({_id: Date.now(), user: auth._id, recipe: recipe._id}));
         }
     }
+
     const removeFromFavorite = async () => {
         const response = await Api.delete(`favorites/${recipe._id}`);
         if(response.code !== 200) return;
         dispatch(removeFavorite(recipe));
     }
+
     const editRecipe = () => {
         navigate(`/editRecipe?id=${recipe._id}`)
     }
+
     const deleteRecipe = async () => {
         const response = await Api.delete(`recipes/${recipe._id}`);
         if(response.code !== 200) return;
         dispatch(removeRecipe(recipe));
     }
+
     const removeFromMenu = async () => {
+        /* Retrieving the menu using menu prop */
         const newMenu = {...menus.filter(m => m._id === menu)[0]};
+        /* Removing the recipe from the menu */
         newMenu.recipes = newMenu.recipes.filter(r => r !== recipe._id)
         const response = await Api.patch(`menus/${newMenu._id}`, newMenu);
         if(response.code !== 200) return;
-        // Since the ID is the same as the oldMenu I can use the new one for deletion purpose.
+        /* Since the ID is the same as the oldMenu, the new one can be used for deletion purpose */
         dispatch(removeMenu(newMenu));
         dispatch(addMenu(newMenu));
     }

@@ -6,7 +6,10 @@ import {login} from '../redux/slices/auth';
 import {useNavigate} from 'react-router-dom';
 
 function RegisterPage() {
+    /* Global State */
     const dispatch = useDispatch();
+
+    /* Local State */
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -14,6 +17,8 @@ function RegisterPage() {
     const [error, setError] = useState(false);
 
     const submit = async(e) => {
+        e.preventDefault(); // Preventing page refresh.
+        /* Handling the register request */
         const response = await Api.post('auth/register', {email, username, password});
         if(response.code === 200) {
             dispatch(login(response.data));

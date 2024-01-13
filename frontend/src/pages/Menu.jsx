@@ -9,16 +9,20 @@ import {useState} from 'react';
 import {isEqual, pick} from 'lodash-es';
 
 function MenuPage() {
+    /* Global State */
     const dispatch = useDispatch();
     const {menus, recipes} = useSelector(state =>
         pick(state, ['menus', 'recipes']), isEqual
     );
+
+    /* Local State */
     const query = useQuery();
     const id = query.get('id');
-    const menu = menus.filter(m => m._id === id)[0];
+    const menu = menus.filter(m => m._id === id)[0]; // Retrieving menu by ID.
     const [name, setName] = useState(menu?.name);
 
     const editMenu = async(e) => {
+        /* Changing the menu's name */
         const newName = e.target.value;
         setName(newName);
         const newMenu = {...menu, name: newName};

@@ -9,11 +9,14 @@ import {useNavigate} from 'react-router-dom';
 import {isEqual, pick} from 'lodash-es';
 
 function MyMenusPage() {
-    const navigate = useNavigate();
+    /* Global State */
     const dispatch = useDispatch();
     const {auth, menus} = useSelector(state =>
         pick(state, ['auth', 'menus']), isEqual
     );
+
+    /* Local State */
+    const navigate = useNavigate();
 
     const createMenu = async() => {
         const response = await Api.post('menus', {name: 'Untitled Menu'});
@@ -28,6 +31,8 @@ function MyMenusPage() {
     }
 
     const menusRender = () => {
+        if(menus.length <= 0)
+            return(<div className={'mt-2 bg-white p-3 rounded'}>There are <b>NO</b> menus here.</div>);
         return(menus.map(menu => <Card className={'m-2'} key={menu._id} sx={{maxWidth: 300}}>
             <CardContent>
                 <Typography sx={{fontSize: 14}} color='text.secondary' gutterBottom>

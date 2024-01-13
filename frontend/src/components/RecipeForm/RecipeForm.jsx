@@ -7,10 +7,13 @@ import {addRecipe, removeRecipe} from '../../redux/slices/recipes';
 import {useNavigate} from 'react-router-dom';
 
 export function RecipeForm(props) {
-    const {recipe} = props;
+    /* Global State */
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const categories = useSelector(state => state.categories);
+
+    /* Local State */
+    const navigate = useNavigate();
+    const {recipe} = props; // If a recipe is received as prop it's an EDIT otherwise it's an ADD.
     const [name, setName] = useState(recipe?.name || '');
     const [category, setCategory] = useState(recipe?.category || categories[0]._id);
     const [ingredients, setIngredients] = useState(recipe?.ingredients || []);
@@ -38,24 +41,28 @@ export function RecipeForm(props) {
     }
 
     const submit = async(e) => {
-        e.preventDefault();
+        e.preventDefault(); // Preventing page refresh.
+        /* Checking if ingredients are present */
         if(ingredients.length <= 0) {
             setError(true);
             return;
         }
         const obj = {name, category, ingredients, duration, description, image};
+        /* Handling Edit/Add based on the recipe prop */
         const response = (recipe) ? await Api.patch(`recipes/${recipe._id}`, obj) : await Api.post('recipes', obj);
         if(response.code !== 200) {
             setError(true);
             return;
         }
+        /* Handling Edit/Add */
         if(recipe) {
-            // The patch return only Ok or Not Ok so this trick is needed.
+            /* The patch return only Ok or Not Ok so this trick is needed */
             const newRecipe = {...recipe, ...obj};
             dispatch(removeRecipe(recipe));
             dispatch(addRecipe(newRecipe));
         }
         else dispatch(addRecipe(response.data));
+        /* Two cases: Edit || Add */
         navigate(`/recipe?id=${recipe?._id || response.data._id}`);
     }
 

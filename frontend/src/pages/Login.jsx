@@ -8,29 +8,34 @@ import {resetFavorites, setFavorites} from '../redux/slices/favorites';
 import {resetMenus, setMenus} from '../redux/slices/menus';
 
 function LoginPage() {
+    /* Global State */
     const dispatch = useDispatch();
+
+    /* Local State */
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
 
     const submit = async(e) => {
-        e.preventDefault();
+        e.preventDefault(); // Preventing page refresh.
+        /* Handling the login request */
         const response = await Api.post('auth/login', {email, password});
         if(response.code !== 200) {setError(true); return;}
         dispatch(login(response.data));
-        /* Loading Favorites */
-        const favorites = await Api.get('favorites');
-        if(favorites.code === 200) {
-            dispatch(resetFavorites());
-            dispatch(setFavorites(favorites.data));
-        }
-        /* Loading Menus */
-        const menus = await Api.get('menus');
-        if(menus.code === 200) {
-            dispatch(resetMenus());
-            dispatch(setMenus(menus.data));
-        }
+        const responses = await Promise.all([
+            Api.get('favorites'),
+            Api.get('menus')
+        ]);
+        const favorites = responses[0]; const menus = responses[1];
+        if(favorites.code !== 200 || menus.code !== 200) return;
+        /* Favorites */
+        dispatch(resetFavorites());
+        dispatch(setFavorites(favorites.data));
+        /* Menus */
+        dispatch(resetMenus());
+        dispatch(setMenus(menus.data));
+        /* Router */
         navigate('/home');
     }
 

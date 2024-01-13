@@ -6,14 +6,15 @@ import useQuery from '../hooks/useQuery';
 import {pick, isEqual} from 'lodash-es';
 
 function EditRecipePage() {
+    /* Global State */
     const {auth, recipes} = useSelector(state =>
         pick(state, ['auth', 'recipes']), isEqual
     );
+    /* Local State */
     const query = useQuery();
     const id = query.get('id');
-    if(!auth || !id) return(<ErrorPage />);
     const recipe = recipes.filter(r => r._id === id)[0];
-    if(!recipe) return(<ErrorPage />);
+    if(!auth || !id || !recipe) return(<ErrorPage />);
     return(<section>
         <Navbar />
         <RecipeForm recipe={recipe} />

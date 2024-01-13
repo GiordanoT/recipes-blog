@@ -5,9 +5,11 @@ import {useSelector} from 'react-redux';
 import './style.css';
 
 export function CategoriesFilter(props) {
+    /* Global State */
+    const categories = useSelector(state => state.categories);
+    /* Local State */
     const {category, setCategory, name, setName} = props;
     const [show, setShow] = useState(true);
-    const categories = useSelector(state => state.categories);
 
     const categoriesRender = () => {
         return(categories.map(category =>
@@ -18,7 +20,7 @@ export function CategoriesFilter(props) {
     }
 
     return(<div className={'me-4'} style={{height: 'min-content'}}>
-        <TextField sx={{background: 'white'}} onChange={e => setName(e.target.value)} label='Search' size='small' />
+        <TextField value={name} className={'bg-white'} onChange={e => setName(e.target.value)} label='Search' size='small' />
         <div className={'border mt-3'}>
             <div className={'d-flex bg-green px-5 py-2'}>
                 <label className={'text-white'}><b>Categories</b></label>
@@ -35,16 +37,16 @@ export function CategoriesFilter(props) {
                 <div className={'d-block my-auto'}>
                     Name contains <b>{name}</b>
                 </div>
-                <IconButton color='error'>
-                    <Clear onClick={e => setName('')} />
+                <IconButton color='error' onClick={e => setName('')}>
+                    <Clear />
                 </IconButton>
             </div>}
             {category && <div style={{justifyContent: 'center'}} className={'d-flex'}>
                 <div className={'d-block my-auto'}>
                     Category is <b>{categories.filter(c => c._id === category)[0]?.name}</b>
                 </div>
-                <IconButton color='error'>
-                    <Clear onClick={e => setCategory('')} />
+                <IconButton color='error' onClick={e => setCategory('')}>
+                    <Clear />
                 </IconButton>
             </div>}
         </div>}

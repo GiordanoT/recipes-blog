@@ -7,12 +7,15 @@ import Api from '../../data/api';
 import {logout} from '../../redux/slices/auth';
 
 export function Navbar() {
-    let pages;
-    let settings;
-
+    /* Global State */
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const auth = useSelector(state => state.auth);
+
+    /* Local State */
+    const navigate = useNavigate();
+    const [anchorElNav, setAnchorElNav] = useState(null); // MUI Handler for menu (NAV)
+    const [anchorElUser, setAnchorElUser] = useState(null); // MUI Handler for menu (USER)
+    let pages; let settings;
     if(auth) {
         pages = ['home', 'add Recipe', 'my Recipes', 'my Menus', 'favorites'];
         settings = ['logout'];
@@ -21,12 +24,10 @@ export function Navbar() {
         settings = ['login', 'register'];
     }
 
-    const [anchorElNav, setAnchorElNav] = useState(null);
-    const [anchorElUser, setAnchorElUser] = useState(null);
-    const handleOpenNavMenu = e => setAnchorElNav(e.currentTarget);
-    const handleOpenUserMenu = e => setAnchorElUser(e.currentTarget);
-    const handleCloseNavMenu = () => setAnchorElNav(null);
-    const handleCloseUserMenu = () => setAnchorElUser(null);
+    const handleOpenNavMenu = e => setAnchorElNav(e.currentTarget); // MUI Handler for menu (NAV)
+    const handleOpenUserMenu = e => setAnchorElUser(e.currentTarget); // MUI Handler for menu (USER)
+    const handleCloseNavMenu = () => setAnchorElNav(null); // MUI Handler for menu (NAV)
+    const handleCloseUserMenu = () => setAnchorElUser(null); // MUI Handler for menu (USER)
 
     const desktopMenuRender = () => {
         return(pages.map(page =>
@@ -82,44 +83,19 @@ export function Navbar() {
                 </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
-                    <IconButton
-                        size='large'
-                        aria-label='account of current user'
-                        aria-controls='menu-appbar'
-                        aria-haspopup='true'
-                        onClick={handleOpenNavMenu}
-                        color='inherit'
-                    >
+                    <IconButton size='large' aria-controls='menu-appbar' aria-haspopup='true'
+                                onClick={handleOpenNavMenu}>
                         <MenuRounded sx={{color: 'black'}} />
                     </IconButton>
-                    <Menu
-                        id='menu-appbar'
-                        anchorEl={anchorElNav}
-                        anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-                        keepMounted={true}
-                        transformOrigin={{vertical: 'top', horizontal: 'left'}}
-                        open={Boolean(anchorElNav)}
-                        onClose={handleCloseNavMenu}
-                        sx={{display: {xs: 'block', md: 'none'}}}
-                    >
+                    <Menu id='menu-appbar' anchorEl={anchorElNav}
+                          anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} keepMounted={true}
+                          transformOrigin={{vertical: 'top', horizontal: 'left'}} open={Boolean(anchorElNav)}
+                          onClose={handleCloseNavMenu} sx={{display: {xs: 'block', md: 'none'}}}>
                         {mobileMenuRender()}
                     </Menu>
                 </Box>
-                <Typography
-                    variant='h5'
-                    noWrap={true}
-                    component='a'
-                    sx={{
-                        mr: 2,
-                        display: { xs: 'flex', md: 'none' },
-                        flexGrow: 1,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                    }}
-                >
+                <Typography variant='h5' noWrap={true} component='a'
+                            sx={{mr: 2, display: {xs: 'flex', md: 'none'}, flexGrow: 1}}>
                     <img src={'images/logo.png'} alt={'Logo'} />
                 </Typography>
                 <Box sx={{ flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
@@ -130,15 +106,10 @@ export function Navbar() {
                     <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
                         <Avatar alt='Avatar' sx={{background: '#7FAD39'}} />
                     </IconButton>
-                    <Menu
-                        sx={{mt: '45px'}}
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-                        keepMounted={true}
-                        transformOrigin={{vertical: 'top', horizontal: 'right'}}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
+                    <Menu sx={{mt: '45px'}} anchorEl={anchorElUser}
+                        anchorOrigin={{vertical: 'top', horizontal: 'right'}} keepMounted={true}
+                        transformOrigin={{vertical: 'top', horizontal: 'right'}} open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}>
                         {settingsRender()}
                     </Menu>
                 </Box>

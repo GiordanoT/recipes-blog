@@ -26,21 +26,26 @@ function App() {
   /* Use Effect Once */
   useEffect(() => {
     (async function() {
+      /* Retrieving resources from the server */
+      const responses = await Promise.all([
+        Api.get('categories'),
+        Api.get('recipes'),
+        Api.get('users')
+      ]);
+      const categories = responses[0]; const recipes = responses[1]; const users = responses[2];
+      if(categories.code !== 200 || recipes.code !== 200 || users.code !== 200) {
+        setError(true);
+        return;
+      }
       /* Categories */
-      let response = await Api.get('categories');
-      if(response.code !== 200) {setError(true); return;}
       dispatch(resetCategories());
-      dispatch(setCategories(response.data));
+      dispatch(setCategories(categories.data));
       /* Recipes */
-      response = await Api.get('recipes');
-      if(response.code !== 200) {setError(true); return;}
       dispatch(resetRecipes());
-      dispatch(setRecipes(response.data));
+      dispatch(setRecipes(recipes.data));
       /* Users */
-      response = await Api.get('users');
-      if(response.code !== 200) {setError(true); return;}
       dispatch(resetUsers());
-      dispatch(setUsers(response.data));
+      dispatch(setUsers(users.data));
       /* Loading Done */
       setLoading(false);
     })()

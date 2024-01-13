@@ -11,16 +11,17 @@ import {addMenu, removeMenu} from '../redux/slices/menus';
 import {isEqual, pick} from 'lodash-es';
 
 function RecipePage() {
+    /* Global State */
     const dispatch = useDispatch();
     const {auth, recipes, users, categories, menus, favorites} = useSelector(state =>
         pick(state, ['auth', 'recipes', 'users', 'categories', 'menus', 'favorites']), isEqual
     );
-    const [menu, setMenu] = useState(menus[0]?._id);
+    /* Local State */
+    const [menu, setMenu] = useState(menus[0]?._id); // Retrieving the first menu for the Select.
     const query = useQuery();
     const id = query.get('id');
-    if(!id) return(<ErrorPage />);
-    const recipe = recipes.filter(r => r._id === id)[0];
-    const isFavorite = favorites.map(f => f.recipe).includes(recipe._id);
+    const recipe = recipes.filter(r => r._id === id)[0]; // Retrieving recipe.
+    const isFavorite = favorites.map(f => f.recipe).includes(recipe?._id); // Checking if the recipe is in favorites.
 
     const handleFavorite = async() => {
         if(isFavorite) {
@@ -30,24 +31,23 @@ function RecipePage() {
         } else {
             const response = await Api.get(`favorites/${recipe._id}`);
             if(response.code !== 200) return;
-            dispatch(addFavorite({_id: new Date(), user: auth._id, recipe: recipe._id}));
+            dispatch(addFavorite({_id: Date.now(), user: auth._id, recipe: recipe._id}));
         }
     }
 
-    const handleMenu = async() => {
-        const newMenu = {...menus.filter(m => m._id === menu)[0]};
+    const addToMenu = async() => {
+        const newMenu = {...menus.filter(m => m._id === menu)[0]}; // Retrieving the menu by ID.
         if(newMenu?.recipes.includes(recipe._id)) {alert('The Recipe Is Already in The Menu'); return;}
-        newMenu.recipes = [...newMenu.recipes, recipe._id];
+        newMenu.recipes = [...newMenu.recipes, recipe._id]; // Adding the recipe to the menu.
         const response = await Api.patch(`menus/${newMenu._id}`, newMenu);
         if(response.code !== 200) return;
-        // Since the ID is the same as the oldMenu I can use the new one for deletion purpose.
+        /* Since the ID is the same as the oldMenu, the new one can be used for deletion purpose. */
         dispatch(removeMenu(newMenu));
         dispatch(addMenu(newMenu));
         alert('Recipe Added in The Menu');
     }
 
-
-    if(!recipe) return(<ErrorPage />);
+    if(!id || !recipe) return(<ErrorPage />);
     return(<section>
         <Navbar />
         <div className={'container mt-3'}>
@@ -68,7 +68,7 @@ function RecipePage() {
                             {menus.map(m => <MenuItem key={m._id} value={m._id}>{m.name}</MenuItem>)}
                         </Select>
                         <IconButton color={'success'} className={''} variant={'contained'} size={'small'}
-                                    onClick={handleMenu}>
+                                    onClick={addToMenu}>
                             <Add />
                         </IconButton>
                         <IconButton color={isFavorite ? 'error' : 'primary'} className={''}
