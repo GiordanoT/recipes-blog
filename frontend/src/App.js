@@ -2,6 +2,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import Api from './data/api';
 import {useDispatch} from 'react-redux';
+import {login} from './redux/slices/auth';
 import {resetCategories, setCategories} from './redux/slices/categories';
 import {resetRecipes, setRecipes} from './redux/slices/recipes';
 import {resetUsers, setUsers} from './redux/slices/users';
@@ -17,6 +18,9 @@ import RecipePage from './pages/Recipe';
 import {CircularProgress} from '@mui/material';
 import MyMenusPage from './pages/MyMenus';
 import MenuPage from './pages/Menu';
+import Storage from './data/storage';
+import {resetFavorites, setFavorites} from './redux/slices/favorites';
+import {resetMenus, setMenus} from './redux/slices/menus';
 
 function App() {
   const dispatch = useDispatch();
@@ -26,14 +30,25 @@ function App() {
   /* Use Effect Once */
   useEffect(() => {
     (async function() {
+      /* Building the requests array */
+      const promises = [Api.get('categories'), Api.get('recipes'), Api.get('users')];
+      /* Retrieving (if present) the session */
+      const auth = Storage.read('auth');
+      if(auth) {
+        /* If there is an active session, retrieve favorites and menus */
+        const cookie = await Api.post('auth/cookie', {cookie: auth.authentication?.token});
+        if(cookie.code === 200) {
+          dispatch(login(auth));
+          promises.push(Api.get('favorites'));
+          promises.push(Api.get('menus'));
+        }
+      }
       /* Retrieving resources from the server */
-      const responses = await Promise.all([
-        Api.get('categories'),
-        Api.get('recipes'),
-        Api.get('users')
-      ]);
+      const responses = await Promise.all(promises);
       const categories = responses[0]; const recipes = responses[1]; const users = responses[2];
-      if(categories.code !== 200 || recipes.code !== 200 || users.code !== 200) {
+      const favorites = responses[3]; const menus = responses[4];
+      if(categories.code !== 200 || recipes.code !== 200 || users.code !== 200 ||
+          (favorites && favorites.code !== 200) || (menus && menus.code !== 200)) {
         setError(true);
         return;
       }
@@ -46,6 +61,16 @@ function App() {
       /* Users */
       dispatch(resetUsers());
       dispatch(setUsers(users.data));
+      /* Favorites */
+      if(favorites) {
+        dispatch(resetFavorites());
+        dispatch(setFavorites(favorites.data));
+      }
+      /* Menus */
+      if(menus) {
+        dispatch(resetMenus());
+        dispatch(setMenus(menus.data));
+      }
       /* Loading Done */
       setLoading(false);
     })()

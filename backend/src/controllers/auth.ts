@@ -40,6 +40,17 @@ class AuthController {
         }
     }
 
+    static cookie = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const {cookie} = req.body;
+            if (!cookie) return res.status(400).send('Missing required parameters.');
+            res.cookie('AUTH-TOKEN', cookie, {domain: process.env['DOMAIN'], path: '/'});
+            return res.status(200).send('Cookie set.');
+        } catch (error) {
+            return res.status(400).send(error)
+        }
+    }
+
     static logout = async (req: Request, res: Response): Promise<Response> => {
         try {
             const token = req.cookies['AUTH-TOKEN'];

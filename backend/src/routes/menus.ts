@@ -2,7 +2,6 @@ import {Router} from 'express';
 import ExistenceMiddleware from '../middlewares/existence';
 import IdMiddleware from '../middlewares/id';
 import AuthMiddleware from '../middlewares/auth';
-import PermissionsMiddleware from '../middlewares/permissions';
 import MenusController from '../controllers/menus';
 
 const router = Router();

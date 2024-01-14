@@ -1,5 +1,5 @@
 import {Button, IconButton, MenuItem, Select, TextField} from '@mui/material';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Add, Clear} from '@mui/icons-material';
 import Api from '../../data/api';
@@ -54,7 +54,6 @@ export function RecipeForm(props) {
             setError(true);
             return;
         }
-        /* Handling Edit/Add */
         if(recipe) {
             /* The patch return only Ok or Not Ok so this trick is needed */
             const newRecipe = {...recipe, ...obj};

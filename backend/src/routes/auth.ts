@@ -13,6 +13,10 @@ router
     .post(AuthController.login)
 
 router
+    .route('/cookie')
+    .post(AuthController.cookie)
+
+router
     .route('/logout')
     .get(AuthMiddleware.isAuthenticated, AuthController.logout)
 

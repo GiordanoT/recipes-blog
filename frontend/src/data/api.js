@@ -35,6 +35,7 @@ class Api {
             return {code: 400, data: null};
         }
     }
+
 }
 
 export default Api;

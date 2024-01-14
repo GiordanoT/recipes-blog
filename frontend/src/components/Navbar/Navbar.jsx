@@ -5,6 +5,7 @@ import {MenuRounded} from '@mui/icons-material';
 import {useDispatch, useSelector} from 'react-redux';
 import Api from '../../data/api';
 import {logout} from '../../redux/slices/auth';
+import Storage from '../../data/storage';
 
 export function Navbar() {
     /* Global State */
@@ -58,6 +59,8 @@ export function Navbar() {
                     if(setting === 'logout') {
                         await Api.get('auth/logout');
                         dispatch(logout());
+                        /* Removing the session in the localstorage */
+                        Storage.reset();
                         navigate('/home');
                     } else navigate('/' + setting);
                 }}>{setting[0].toUpperCase() + setting.substring(1)}</Typography>
