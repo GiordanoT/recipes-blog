@@ -13,6 +13,7 @@ import {
     FavoritesRouter,
     MenusRouter
 } from './routes';
+import U from './common/u';
 
 const app = express();
 
@@ -29,8 +30,17 @@ server.listen(5000);
 /* Database */
 (async function() {
     mongoose.Promise = Promise;
-    try {await mongoose.connect(process.env['MONGODB_URL'], {dbName: 'recipes-blog'});}
-    catch (error) {console.log('DB Connection error:', error);}
+    let connection = false;
+    while(!connection) {
+        try {
+            await mongoose.connect(process.env['MONGODB_URL'], {dbName: 'recipes-blog'});
+            console.log('DB Connection done.');
+            connection = true;
+        } catch (error) {
+            console.log(`DB Connection error (${process.env['MONGODB_URL']}), waiting 30 seconds...`);
+            await U.sleep(30);
+        }
+    }
 })();
 
 /* Routes */

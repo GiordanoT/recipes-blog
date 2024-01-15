@@ -90485,6 +90485,9 @@ var U = class {
   static isId(id) {
     return !!id.match(/^[0-9a-fA-F]{24}$/);
   }
+  static sleep(s) {
+    return new Promise((resolve) => setTimeout(resolve, s * 1e3));
+  }
 };
 var u_default = U;
 
@@ -91036,10 +91039,16 @@ var server = import_http.default.createServer(app);
 server.listen(5e3);
 (async function() {
   import_mongoose6.default.Promise = Promise;
-  try {
-    await import_mongoose6.default.connect("mongodb://mongo:27017", { dbName: "recipes-blog" });
-  } catch (error) {
-    console.log("DB Connection error:", error);
+  let connection = false;
+  while (!connection) {
+    try {
+      await import_mongoose6.default.connect("mongodb://mongo:27017", { dbName: "recipes-blog" });
+      console.log("DB Connection done.");
+      connection = true;
+    } catch (error) {
+      console.log(`DB Connection error (${"mongodb://mongo:27017"}), waiting 30 seconds...`);
+      await u_default.sleep(30);
+    }
   }
 })();
 var root = "backend";

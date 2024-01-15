@@ -14,6 +14,9 @@ class U {
     static isId(id: string): boolean {
         return !!(id.match(/^[0-9a-fA-F]{24}$/));
     }
+    static sleep(s: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, s * 1000));
+    }
 }
 
 export default U;
