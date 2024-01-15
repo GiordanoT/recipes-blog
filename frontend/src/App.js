@@ -1,11 +1,11 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {HashRouter, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import {AuthApi, CategoriesApi, FavoritesApi, MenusApi, RecipesApi, UsersApi} from './api';
 import {useDispatch} from 'react-redux';
 import {login} from './redux/slices/auth';
-import {resetCategories, setCategories} from './redux/slices/categories';
-import {resetRecipes, setRecipes} from './redux/slices/recipes';
-import {resetUsers, setUsers} from './redux/slices/users';
+import {setCategories} from './redux/slices/categories';
+import {setRecipes} from './redux/slices/recipes';
+import {setUsers} from './redux/slices/users';
 import ErrorPage from './pages/Error';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
@@ -19,8 +19,8 @@ import {CircularProgress} from '@mui/material';
 import MyMenusPage from './pages/MyMenus';
 import MenuPage from './pages/Menu';
 import Storage from './data/storage';
-import {resetFavorites, setFavorites} from './redux/slices/favorites';
-import {resetMenus, setMenus} from './redux/slices/menus';
+import {setFavorites} from './redux/slices/favorites';
+import {setMenus} from './redux/slices/menus';
 
 function App() {
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ function App() {
           dispatch(login(auth));
           promises.push(FavoritesApi.getAll());
           promises.push(MenusApi.getAll());
-        }
+        } else Storage.reset();
       }
       /* Retrieving resources from the server */
       const responses = await Promise.all(promises);
@@ -53,24 +53,16 @@ function App() {
         return;
       }
       /* Categories */
-      dispatch(resetCategories());
       dispatch(setCategories(categories.data));
       /* Recipes */
-      dispatch(resetRecipes());
       dispatch(setRecipes(recipes.data));
       /* Users */
-      dispatch(resetUsers());
       dispatch(setUsers(users.data));
       /* Favorites */
-      if(favorites) {
-        dispatch(resetFavorites());
-        dispatch(setFavorites(favorites.data));
-      }
+      if(favorites) dispatch(setFavorites(favorites.data));
       /* Menus */
-      if(menus) {
-        dispatch(resetMenus());
-        dispatch(setMenus(menus.data));
-      }
+      if(menus) dispatch(setMenus(menus.data));
+
       /* Loading Done */
       setLoading(false);
     })()
@@ -80,7 +72,7 @@ function App() {
     <b className={'text-danger'}>Error:</b> Cannot retrieve data from the server, retry refreshing the page...
   </div>);
   if(loading) return(<div className={'d-block text-center mt-3'}><CircularProgress /></div>);
-  return(<BrowserRouter>
+  return(<HashRouter>
     <Routes>
       <Route path={''} element={<HomePage />} />
       <Route path={'home'} element={<HomePage />} />
@@ -95,7 +87,7 @@ function App() {
       <Route path={'menu'} element={<MenuPage />} />
       <Route path={'*'} element={<ErrorPage />} />
     </Routes>
-  </BrowserRouter>);
+  </HashRouter>);
 }
 
 export default App;

@@ -4,8 +4,8 @@ import Storage from '../data/storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/slices/auth';
 import {useNavigate} from 'react-router-dom';
-import {resetFavorites, setFavorites} from '../redux/slices/favorites';
-import {resetMenus, setMenus} from '../redux/slices/menus';
+import {setFavorites} from '../redux/slices/favorites';
+import {setMenus} from '../redux/slices/menus';
 import {Banner, Navbar} from '../components';
 import {AuthApi, FavoritesApi, MenusApi} from '../api';
 import ErrorPage from './Error';
@@ -35,10 +35,8 @@ function LoginPage() {
         const favorites = responses[0]; const menus = responses[1];
         if(favorites.code === 200 && menus.code === 200) {
             /* Favorites */
-            dispatch(resetFavorites());
             dispatch(setFavorites(favorites.data));
             /* Menus */
-            dispatch(resetMenus());
             dispatch(setMenus(menus.data));
         }
         /* Saving the session in the localstorage */
