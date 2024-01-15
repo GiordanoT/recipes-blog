@@ -1,15 +1,17 @@
 import {Button, TextField} from '@mui/material';
 import {useState} from 'react';
-import Api from '../data/api';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/slices/auth';
 import {useNavigate} from 'react-router-dom';
 import Storage from '../data/storage';
-import {Navbar} from '../components';
+import {Banner, Navbar} from '../components';
+import {AuthApi} from '../api';
+import ErrorPage from './Error';
 
 function RegisterPage() {
     /* Global State */
     const dispatch = useDispatch();
+    const auth = useSelector((state => state.auth));
 
     /* Local State */
     const navigate = useNavigate();
@@ -21,18 +23,19 @@ function RegisterPage() {
     const submit = async(e) => {
         e.preventDefault(); // Preventing page refresh.
         /* Handling the register request */
-        const response = await Api.post('auth/register', {email, username, password});
-        if(response.code === 200) {
-            const auth = response.data;
-            dispatch(login(auth));
-            /* Saving the session in the localstorage */
-            Storage.write('auth', auth);
-            navigate('/home');
-        } else setError(true);
+        const response = await AuthApi.register(email, username, password);
+        if(response.code !== 200) {setError(true); return;}
+        const auth = response.data;
+        dispatch(login(auth));
+        /* Saving the session in the localstorage */
+        Storage.write('auth', auth);
+        navigate('/home');
     }
 
+    if(auth) return(<ErrorPage />);
     return(<section>
         <Navbar />
+        <Banner title={'register'} />
         <div style={{width: '25em'}} className={'p-3 bg-white card mx-auto mt-5'}>
             <label className={'d-block mx-auto'}><b>REGISTER</b></label>
             <hr />

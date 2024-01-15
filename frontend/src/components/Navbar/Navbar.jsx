@@ -3,9 +3,11 @@ import {useNavigate} from 'react-router-dom';
 import {AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography} from '@mui/material';
 import {MenuRounded} from '@mui/icons-material';
 import {useDispatch, useSelector} from 'react-redux';
-import Api from '../../data/api';
 import {logout} from '../../redux/slices/auth';
 import Storage from '../../data/storage';
+import {AuthApi} from '../../api';
+import {resetFavorites} from '../../redux/slices/favorites';
+import {resetMenus} from '../../redux/slices/menus';
 
 export function Navbar() {
     /* Global State */
@@ -57,8 +59,10 @@ export function Navbar() {
             <MenuItem key={setting} onClick={handleCloseUserMenu}>
                 <Typography textAlign='center' onClick={async() => {
                     if(setting === 'logout') {
-                        await Api.get('auth/logout');
+                        await AuthApi.logout();
                         dispatch(logout());
+                        dispatch(resetFavorites());
+                        dispatch(resetMenus());
                         /* Removing the session in the localstorage */
                         Storage.reset();
                         navigate('/home');

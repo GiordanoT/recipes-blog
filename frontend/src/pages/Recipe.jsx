@@ -1,14 +1,14 @@
 import useQuery from '../hooks/useQuery';
-import {Navbar} from '../components';
+import {Banner, Navbar} from '../components';
 import ErrorPage from './Error';
 import {useDispatch, useSelector} from 'react-redux';
 import {MenuItem, Select, IconButton} from '@mui/material';
 import {Add, Favorite} from '@mui/icons-material';
 import {useState} from 'react';
-import Api from '../data/api';
 import {addFavorite, removeFavorite} from '../redux/slices/favorites';
 import {addMenu, removeMenu} from '../redux/slices/menus';
 import {isEqual, pick} from 'lodash-es';
+import {FavoritesApi, MenusApi} from '../api';
 
 function RecipePage() {
     /* Global State */
@@ -25,11 +25,11 @@ function RecipePage() {
 
     const handleFavorite = async() => {
         if(isFavorite) {
-            const response = await Api.delete(`favorites/${recipe._id}`);
+            const response = await FavoritesApi.remove(recipe);
             if(response.code !== 200) return;
             dispatch(removeFavorite(recipe));
         } else {
-            const response = await Api.get(`favorites/${recipe._id}`);
+            const response = await FavoritesApi.add(recipe);
             if(response.code !== 200) return;
             dispatch(addFavorite({_id: Date.now(), user: auth._id, recipe: recipe._id}));
         }
@@ -39,7 +39,7 @@ function RecipePage() {
         const newMenu = {...menus.filter(m => m._id === menu)[0]}; // Retrieving the menu by ID.
         if(newMenu?.recipes.includes(recipe._id)) {alert('The Recipe Is Already in The Menu'); return;}
         newMenu.recipes = [...newMenu.recipes, recipe._id]; // Adding the recipe to the menu.
-        const response = await Api.patch(`menus/${newMenu._id}`, newMenu);
+        const response = await MenusApi.edit(newMenu._id, newMenu);
         if(response.code !== 200) return;
         /* Since the ID is the same as the oldMenu, the new one can be used for deletion purpose. */
         dispatch(removeMenu(newMenu));
@@ -50,7 +50,8 @@ function RecipePage() {
     if(!id || !recipe) return(<ErrorPage />);
     return(<section>
         <Navbar />
-        <div className={'container mt-3'}>
+        <Banner title={'recipe'} />
+        <div className={'container mt-4'}>
             <div className={'row'}>
                 <img className={'col-6'} src={recipe.image} alt={recipe.name} />
                 <div className={'col-6'}>
@@ -79,7 +80,7 @@ function RecipePage() {
                 </div>
             </div>
             <h4 className={'mt-3'}>Procedure</h4>
-            <label>{recipe.description}</label>
+            <label className={'mb-3'}>{recipe.description}</label>
         </div>
     </section>)
 }

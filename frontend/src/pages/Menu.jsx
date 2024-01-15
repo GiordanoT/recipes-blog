@@ -1,12 +1,12 @@
-import {Navbar, Recipes} from '../components';
+import {Banner, Navbar, Recipes} from '../components';
 import {useDispatch, useSelector} from 'react-redux';
 import useQuery from '../hooks/useQuery';
 import ErrorPage from './Error';
 import {TextField} from '@mui/material';
-import Api from '../data/api';
 import {addMenu, removeMenu} from '../redux/slices/menus';
 import {useState} from 'react';
 import {isEqual, pick} from 'lodash-es';
+import {MenusApi} from '../api';
 
 function MenuPage() {
     /* Global State */
@@ -26,7 +26,7 @@ function MenuPage() {
         const newName = e.target.value;
         setName(newName);
         const newMenu = {...menu, name: newName};
-        const response = await Api.patch(`menus/${menu._id}`, newMenu);
+        const response = await MenusApi.edit(menu._id, newMenu);
         if(response.code !== 200) return;
         dispatch(removeMenu(newMenu));
         dispatch(addMenu(newMenu));
@@ -35,6 +35,7 @@ function MenuPage() {
     if(!id || !menu) return(<ErrorPage />);
     return(<section>
         <Navbar />
+        <Banner title={'menu'} />
         <div className={'container mt-4'}>
             <div className={'d-flex'}>
                 <TextField onChange={editMenu} className={'ms-auto bg-white'} value={name} size={'small'} label={`Menu's name`} />

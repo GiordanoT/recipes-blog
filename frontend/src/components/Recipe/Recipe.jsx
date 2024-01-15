@@ -1,13 +1,13 @@
 import {Card, CardHeader, CardMedia, CardActions, IconButton} from '@mui/material';
 import {Edit, Delete, Favorite, Clear, Info} from '@mui/icons-material';
-import './style.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
-import Api from '../../data/api';
 import {addFavorite, removeFavorite} from '../../redux/slices/favorites';
 import {removeRecipe} from '../../redux/slices/recipes';
 import {addMenu, removeMenu} from '../../redux/slices/menus';
 import {isEqual, pick} from 'lodash-es';
+import {FavoritesApi, MenusApi, RecipesApi} from '../../api';
+import './style.css';
 
 export function Recipe(props) {
     /* Global State */
@@ -28,14 +28,14 @@ export function Recipe(props) {
         if(isFavorite) {
             await removeFromFavorite();
         } else {
-            const response = await Api.get(`favorites/${recipe._id}`);
+            const response = await FavoritesApi.add(recipe);
             if(response.code !== 200) return;
             dispatch(addFavorite({_id: Date.now(), user: auth._id, recipe: recipe._id}));
         }
     }
 
     const removeFromFavorite = async () => {
-        const response = await Api.delete(`favorites/${recipe._id}`);
+        const response = await FavoritesApi.remove(recipe);
         if(response.code !== 200) return;
         dispatch(removeFavorite(recipe));
     }
@@ -45,7 +45,7 @@ export function Recipe(props) {
     }
 
     const deleteRecipe = async () => {
-        const response = await Api.delete(`recipes/${recipe._id}`);
+        const response = await RecipesApi.delete(recipe);
         if(response.code !== 200) return;
         dispatch(removeRecipe(recipe));
     }
@@ -55,7 +55,7 @@ export function Recipe(props) {
         const newMenu = {...menus.filter(m => m._id === menu)[0]};
         /* Removing the recipe from the menu */
         newMenu.recipes = newMenu.recipes.filter(r => r !== recipe._id)
-        const response = await Api.patch(`menus/${newMenu._id}`, newMenu);
+        const response = await MenusApi.edit(newMenu._id, newMenu);
         if(response.code !== 200) return;
         /* Since the ID is the same as the oldMenu, the new one can be used for deletion purpose */
         dispatch(removeMenu(newMenu));

@@ -2,9 +2,9 @@ import {Button, IconButton, MenuItem, Select, TextField} from '@mui/material';
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Add, Clear} from '@mui/icons-material';
-import Api from '../../data/api';
 import {addRecipe, removeRecipe} from '../../redux/slices/recipes';
 import {useNavigate} from 'react-router-dom';
+import {RecipesApi} from '../../api';
 
 export function RecipeForm(props) {
     /* Global State */
@@ -49,7 +49,7 @@ export function RecipeForm(props) {
         }
         const obj = {name, category, ingredients, duration, description, image};
         /* Handling Edit/Add based on the recipe prop */
-        const response = (recipe) ? await Api.patch(`recipes/${recipe._id}`, obj) : await Api.post('recipes', obj);
+        const response = (recipe) ? await RecipesApi.edit(recipe._id, obj) : await RecipesApi.create(obj);
         if(response.code !== 200) {
             setError(true);
             return;

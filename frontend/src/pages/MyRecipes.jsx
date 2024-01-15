@@ -1,6 +1,6 @@
 import {useSelector} from 'react-redux';
 import Error from './Error';
-import {Navbar, Recipes} from '../components';
+import {Banner, Navbar, Recipes} from '../components';
 import {isEqual, pick} from 'lodash-es';
 
 function MyRecipesPage() {
@@ -12,6 +12,7 @@ function MyRecipesPage() {
     if(!auth) return(<Error />);
     return(<section>
         <Navbar />
+        <Banner title={'my recipes'} />
         <div className={'container mt-4'}>
             <Recipes recipes={recipes.filter(r => r.author === auth._id)} />
         </div>

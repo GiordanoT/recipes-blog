@@ -1,4 +1,4 @@
-import {Navbar} from '../components';
+import {Banner, Navbar} from '../components';
 import {useSelector} from 'react-redux';
 import ErrorPage from './Error';
 import {RecipeForm} from '../components';
@@ -17,6 +17,7 @@ function EditRecipePage() {
     if(!auth || !id || !recipe) return(<ErrorPage />);
     return(<section>
         <Navbar />
+        <Banner title={'edit recipe'} />
         <RecipeForm recipe={recipe} />
     </section>);
 }

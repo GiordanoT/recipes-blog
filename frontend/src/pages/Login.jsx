@@ -1,17 +1,19 @@
 import {Button, TextField} from '@mui/material';
 import {useState} from 'react';
-import Api from '../data/api';
 import Storage from '../data/storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/slices/auth';
 import {useNavigate} from 'react-router-dom';
 import {resetFavorites, setFavorites} from '../redux/slices/favorites';
 import {resetMenus, setMenus} from '../redux/slices/menus';
-import {Navbar} from '../components';
+import {Banner, Navbar} from '../components';
+import {AuthApi, FavoritesApi, MenusApi} from '../api';
+import ErrorPage from './Error';
 
 function LoginPage() {
     /* Global State */
     const dispatch = useDispatch();
+    const auth = useSelector((state => state.auth));
 
     /* Local State */
     const navigate = useNavigate();
@@ -22,30 +24,33 @@ function LoginPage() {
     const submit = async(e) => {
         e.preventDefault(); // Preventing page refresh.
         /* Handling the login request */
-        const response = await Api.post('auth/login', {email, password});
+        const response = await AuthApi.login(email, password);
         if(response.code !== 200) {setError(true); return;}
         const auth = response.data;
         dispatch(login(auth));
         const responses = await Promise.all([
-            Api.get('favorites'),
-            Api.get('menus')
+            FavoritesApi.getAll(),
+            MenusApi.getAll()
         ]);
         const favorites = responses[0]; const menus = responses[1];
-        if(favorites.code !== 200 || menus.code !== 200) return;
-        /* Favorites */
-        dispatch(resetFavorites());
-        dispatch(setFavorites(favorites.data));
-        /* Menus */
-        dispatch(resetMenus());
-        dispatch(setMenus(menus.data));
+        if(favorites.code === 200 && menus.code === 200) {
+            /* Favorites */
+            dispatch(resetFavorites());
+            dispatch(setFavorites(favorites.data));
+            /* Menus */
+            dispatch(resetMenus());
+            dispatch(setMenus(menus.data));
+        }
         /* Saving the session in the localstorage */
         Storage.write('auth', auth);
         /* Router */
         navigate('/home');
     }
 
+    if(auth) return(<ErrorPage />);
     return(<section>
         <Navbar />
+        <Banner title={'login'} />
         <div style={{width: '25em'}} className={'p-3 bg-white card mx-auto mt-5'}>
             <label className={'d-block mx-auto'}><b>LOGIN</b></label>
             <hr />

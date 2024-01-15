@@ -1,7 +1,6 @@
-import {Navbar} from '../components';
+import {RecipeForm, Banner, Navbar} from '../components';
 import {useSelector} from 'react-redux';
 import Error from './Error';
-import {RecipeForm} from '../components';
 
 function AddRecipePage() {
     /* Global State */
@@ -10,6 +9,7 @@ function AddRecipePage() {
     if(!auth) return(<Error />);
     return(<section>
         <Navbar />
+        <Banner title={'add recipe'} />
         <RecipeForm recipe={null} />
     </section>);
 }

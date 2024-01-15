@@ -1,12 +1,12 @@
-import {Navbar} from '../components';
+import {Banner, Navbar} from '../components';
 import {Button, Card, CardActions, CardContent, IconButton, Typography} from '@mui/material';
 import {Info, Delete} from '@mui/icons-material';
-import Api from '../data/api';
 import {useDispatch, useSelector} from 'react-redux';
 import ErrorPage from './Error';
 import {addMenu, removeMenu} from '../redux/slices/menus';
 import {useNavigate} from 'react-router-dom';
 import {isEqual, pick} from 'lodash-es';
+import {MenusApi} from '../api';
 
 function MyMenusPage() {
     /* Global State */
@@ -19,13 +19,13 @@ function MyMenusPage() {
     const navigate = useNavigate();
 
     const createMenu = async() => {
-        const response = await Api.post('menus', {name: 'Untitled Menu'});
+        const response = await MenusApi.create({name: 'Untitled Menu'});
         if(response.code !== 200) return;
         dispatch(addMenu(response.data));
     }
 
     const deleteMenu = async(menu) => {
-        const response = await Api.delete(`menus/${menu._id}`);
+        const response = await MenusApi.delete(menu);
         if(response.code !== 200) return;
         dispatch(removeMenu(menu));
     }
@@ -56,6 +56,7 @@ function MyMenusPage() {
     if(!auth) return(<ErrorPage />);
     return(<section>
         <Navbar />
+        <Banner title={'my menus'} />
         <div className={'container mt-3'}>
             <div className={'d-flex'}>
                 <Button variant={'contained'} className={'ms-auto'} onClick={createMenu}>Create Menu</Button>

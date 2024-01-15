@@ -1,6 +1,6 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from 'react';
-import Api from './data/api';
+import {AuthApi, CategoriesApi, FavoritesApi, MenusApi, RecipesApi, UsersApi} from './api';
 import {useDispatch} from 'react-redux';
 import {login} from './redux/slices/auth';
 import {resetCategories, setCategories} from './redux/slices/categories';
@@ -31,16 +31,16 @@ function App() {
   useEffect(() => {
     (async function() {
       /* Building the requests array */
-      const promises = [Api.get('categories'), Api.get('recipes'), Api.get('users')];
+      const promises = [CategoriesApi.getAll(), RecipesApi.getAll(), UsersApi.getAll()];
       /* Retrieving (if present) the session */
       const auth = Storage.read('auth');
       if(auth) {
         /* If there is an active session, retrieve favorites and menus */
-        const cookie = await Api.post('auth/cookie', {cookie: auth.authentication?.token});
+        const cookie = await AuthApi.cookie(auth.authentication?.token);
         if(cookie.code === 200) {
           dispatch(login(auth));
-          promises.push(Api.get('favorites'));
-          promises.push(Api.get('menus'));
+          promises.push(FavoritesApi.getAll());
+          promises.push(MenusApi.getAll());
         }
       }
       /* Retrieving resources from the server */
