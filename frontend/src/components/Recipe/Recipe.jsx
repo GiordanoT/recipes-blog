@@ -74,7 +74,7 @@ export function Recipe(props) {
                 <Info />
             </IconButton>
             {auth && <section>
-                {(path === '/home') && <IconButton color={isFavorite ? 'error' : 'primary'} onClick={handleFavorite}>
+                {(path === '/home' || path === '/') && <IconButton color={isFavorite ? 'error' : 'primary'} onClick={handleFavorite}>
                     <Favorite />
                 </IconButton>}
                 {(path === '/favorites') && <IconButton color='error' onClick={removeFromFavorite}>
