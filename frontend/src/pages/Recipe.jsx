@@ -64,14 +64,16 @@ function RecipePage() {
                         •<b>{ingredient}</b>
                     </label>)}</div>
                     {auth && <div className={'d-flex mt-3'}>
-                        <Select className={'bg-white'} value={menu} onChange={e => setMenu(e.target.value)}
-                                size='small'>
-                            {menus.map(m => <MenuItem key={m._id} value={m._id}>{m.name}</MenuItem>)}
-                        </Select>
-                        <IconButton color={'success'} className={''} variant={'contained'} size={'small'}
-                                    onClick={addToMenu}>
-                            <Add />
-                        </IconButton>
+                        {menus.length > 0 && <section>
+                            <Select className={'bg-white'} value={menu} onChange={e => setMenu(e.target.value)}
+                                    size='small'>
+                                {menus.map(m => <MenuItem key={m._id} value={m._id}>{m.name}</MenuItem>)}
+                            </Select>
+                            <IconButton color={'success'} className={''} variant={'contained'} size={'small'}
+                                        onClick={addToMenu}>
+                                <Add />
+                            </IconButton>
+                        </section>}
                         <IconButton color={isFavorite ? 'error' : 'primary'} className={''}
                                     variant={'contained'} size={'small'} onClick={handleFavorite}>
                             <Favorite />
