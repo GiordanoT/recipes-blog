@@ -1,2 +1,2 @@
-# Frontend Engineering: Recipe Bloq
+# Frontend Engineering: Recipe Blog
 Final project for the Frontend Engineering course.
