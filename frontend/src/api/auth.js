@@ -13,6 +13,7 @@ export class AuthApi {
         return Api.get(`${AuthApi.path}/logout`);
     }
     static async cookie(cookie) {
+        /* Set the authentication cookie */
         return await Api.post(`${AuthApi.path}/cookie`, {cookie});
     }
 }

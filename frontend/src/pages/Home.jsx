@@ -1,4 +1,4 @@
-import {Navbar, CategoriesFilter, Recipes, Banner} from '../components';
+import {Navbar, Filters, Recipes, Banner} from '../components';
 import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
@@ -23,7 +23,7 @@ function HomePage() {
         <Navbar />
         <Banner title={'home'} />
         <div className={'mt-4 container d-flex'}>
-            <CategoriesFilter category={category} setCategory={setCategory} name={name} setName={setName} />
+            <Filters category={category} setCategory={setCategory} name={name} setName={setName} />
             <div className={'mt-3'}>
                 <Recipes recipes={filteredRecipes} />
             </div>

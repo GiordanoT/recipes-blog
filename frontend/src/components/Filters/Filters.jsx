@@ -4,7 +4,7 @@ import {IconButton, TextField} from '@mui/material';
 import {useSelector} from 'react-redux';
 import './style.css';
 
-export function CategoriesFilter(props) {
+export function Filters(props) {
     /* Global State */
     const categories = useSelector(state => state.categories);
     /* Local State */
