@@ -90998,10 +90998,6 @@ var MenusController = class {
       try {
         const { id } = req.params;
         const { name, recipes } = req.body;
-        for (const id2 of recipes) {
-          if (!u_default.isId(id2) || !await Recipes.getById(id2))
-            return res.status(400).send("Invalid data.");
-        }
         await Menus.update(id, { name, recipes });
         return res.status(200).send("Menu updated.");
       } catch (error) {

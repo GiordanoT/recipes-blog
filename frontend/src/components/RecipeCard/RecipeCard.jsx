@@ -9,7 +9,7 @@ import {isEqual, pick} from 'lodash-es';
 import {FavoritesApi, MenusApi, RecipesApi} from '../../api';
 import './style.css';
 
-export function Recipe(props) {
+export function RecipeCard(props) {
     /* Global State */
     const dispatch = useDispatch();
     const {auth, users, menus, favorites} = useSelector(state =>

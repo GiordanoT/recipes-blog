@@ -50,6 +50,7 @@ function App() {
       if(categories.code !== 200 || recipes.code !== 200 || users.code !== 200 ||
           (favorites && favorites.code !== 200) || (menus && menus.code !== 200)) {
         setError(true);
+        Storage.reset();
         return;
       }
       /* Categories */

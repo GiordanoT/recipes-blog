@@ -36,7 +36,7 @@ function MyMenusPage() {
         return(menus.map(menu => <Card className={'m-2'} key={menu._id} sx={{maxWidth: 300}}>
             <CardContent>
                 <Typography sx={{fontSize: 14}} color='text.secondary' gutterBottom>
-                    Menu ({menu.recipes.length} recipes)
+                    Menu
                 </Typography>
                 <Typography variant='h5' component='div'>
                     {menu.name}

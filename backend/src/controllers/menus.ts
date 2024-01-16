@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {Menus, Recipes, Users} from '../db';
+import {Menus, Users} from '../db';
 import U from '../common/u';
 
 class MenusController {
@@ -40,10 +40,6 @@ class MenusController {
         try {
             const {id} = req.params;
             const {name, recipes} = req.body;
-            for(const id of recipes) {
-                if(!U.isId(id) || !(await Recipes.getById(id)))
-                    return res.status(400).send('Invalid data.');
-            }
             await Menus.update(id, {name, recipes});
             return res.status(200).send('Menu updated.');
         } catch(error) {

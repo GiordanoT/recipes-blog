@@ -1,4 +1,4 @@
-import {Recipe} from '../Recipe/Recipe';
+import {RecipeCard} from '../index';
 import {useState} from 'react';
 import Pagination from '@mui/material/Pagination';
 import {useLocation} from 'react-router-dom';
@@ -11,10 +11,10 @@ export function Recipes(props) {
     const entriesForPage = 9;
 
     const recipesRender = () => {
-        /* Retrieving recipes for specific page and Render */
+        /* Retrieving recipes for specific page and Render them */
         return(recipes
             .slice((page - 1) * entriesForPage, (page - 1) * entriesForPage + entriesForPage)
-            .map(recipe => <Recipe key={recipe._id} recipe={recipe} path={location.pathname} menu={menu} />)
+            .map(recipe => <RecipeCard key={recipe._id} recipe={recipe} path={location.pathname} menu={menu} />)
         );
     }
 

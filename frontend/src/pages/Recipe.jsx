@@ -37,14 +37,14 @@ function RecipePage() {
 
     const addToMenu = async() => {
         const newMenu = {...menus.filter(m => m._id === menu)[0]}; // Retrieving the menu by ID.
-        if(newMenu?.recipes.includes(recipe._id)) {alert('The Recipe Is Already in The Menu'); return;}
+        if(newMenu?.recipes.includes(recipe._id)) {alert('This recipe is already in the menu.'); return;}
         newMenu.recipes = [...newMenu.recipes, recipe._id]; // Adding the recipe to the menu.
         const response = await MenusApi.edit(newMenu._id, newMenu);
         if(response.code !== 200) return;
         /* Since the ID is the same as the oldMenu, the new one can be used for deletion purpose. */
         dispatch(removeMenu(newMenu));
         dispatch(addMenu(newMenu));
-        alert('Recipe Added in The Menu');
+        alert('Recipe added in the menu.');
     }
 
     if(!id || !recipe) return(<ErrorPage />);
